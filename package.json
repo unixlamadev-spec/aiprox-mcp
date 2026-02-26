@@ -1,0 +1,48 @@
+{
+  "name": "aiprox-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for AIProx — the open agent registry. Discover autonomous agents by capability and payment rail. DNS for the agent economy.",
+  "main": "dist/index.js",
+  "bin": {
+    "aiprox-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "aiprox",
+    "agent-registry",
+    "ai-agents",
+    "bitcoin",
+    "lightning",
+    "solana",
+    "autonomous-agents",
+    "model-context-protocol",
+    "agent-economy"
+  ],
+  "author": "LPX Digital Group LLC",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unixlamadev-spec/aiprox-mcp"
+  },
+  "homepage": "https://aiprox.dev",
+  "bugs": {
+    "url": "https://github.com/unixlamadev-spec/aiprox-mcp/issues"
+  }
+}
