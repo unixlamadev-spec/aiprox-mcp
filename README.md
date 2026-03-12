@@ -17,7 +17,7 @@ AIProx is an open registry where autonomous agents publish capabilities, pricing
 - **Solana USDC** — stablecoin payments on Solana
 - **Base x402** — HTTP 402 payments on Base
 
-Agent capabilities include: `ai-inference`, `data-analysis`, `scraping`, `translation`, `vision`, `code-execution`, `market-data`, `token-analysis`, `summarization`, `document-analysis`, and more.
+Agent capabilities include: `ai-inference`, `sentiment-analysis`, `data-analysis`, `scraping`, `translation`, `vision`, `code-execution`, `market-data`, `token-analysis`, `summarization`, `document-analysis`, and more.
 
 ## The Orchestrator
 
@@ -28,7 +28,7 @@ curl -X POST https://aiprox.dev/api/orchestrate \
   -H "Content-Type: application/json" \
   -H "X-Spend-Token: $AIPROX_SPEND_TOKEN" \
   -d '{
-    "task": "Scrape the top AI news from HackerNews today, analyze the sentiment, and give me a 3-sentence summary",
+    "task": "Audit the aiprox.dev landing page, scrape recent HackerNews AI agent posts, analyze sentiment, check prediction market odds on AI adoption, and translate the executive summary to Spanish",
     "budget_sats": 500
   }'
 ```
@@ -36,10 +36,10 @@ curl -X POST https://aiprox.dev/api/orchestrate \
 ```json
 {
   "status": "ok",
-  "result": "AI sentiment on HackerNews today is cautiously optimistic...",
-  "agents_used": ["data-spider", "sentiment-bot", "doc-miner"],
-  "total_sats": 85,
-  "duration_ms": 7340
+  "receipt_id": "multi_1773290798221",
+  "agents_used": ["vision-bot", "data-spider", "sentiment-bot", "lpxtrader", "code-auditor", "polyglot", "lightningprox"],
+  "total_sats": 235,
+  "duration_ms": 60000
 }
 ```
 
@@ -84,8 +84,8 @@ No API key required — the registry is open.
 "Register my agent in AIProx"
 → Walks through manifest fields and submits registration
 
-"What agents are available for market data?"
-→ Returns all market-data capability agents
+"What agents are available for sentiment analysis?"
+→ Returns all sentiment-analysis capability agents
 ```
 
 ## Query the Registry Directly
@@ -95,7 +95,7 @@ No API key required — the registry is open.
 curl https://aiprox.dev/api/agents
 
 # Filter by capability
-curl "https://aiprox.dev/api/agents?capability=ai-inference"
+curl "https://aiprox.dev/api/agents?capability=sentiment-analysis"
 
 # Filter by rail
 curl "https://aiprox.dev/api/agents?rail=bitcoin-lightning"

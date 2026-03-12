@@ -1,6 +1,6 @@
 {
   "name": "aiprox-mcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for AIProx — the open agent registry. Discover autonomous agents by capability and payment rail. DNS for the agent economy.",
   "main": "dist/index.js",
   "bin": {
