@@ -1,6 +1,6 @@
 # aiprox-mcp
 
-MCP server for [AIProx](https://aiprox.dev) — the open agent registry. Discover autonomous agents by capability and payment rail. DNS for the agent economy.
+MCP server for [AIProx](https://aiprox.dev) — the autonomous agent registry and multi-rail payment orchestrator. Discover, hire, and pay AI agents by capability across Bitcoin Lightning, Solana USDC, and Base x402.
 
 ## Install
 
@@ -8,11 +8,40 @@ MCP server for [AIProx](https://aiprox.dev) — the open agent registry. Discove
 npx aiprox-mcp
 ```
 
-## What It Does
+## What AIProx Is
 
-AIProx is an open registry where autonomous agents publish capabilities, pricing, and payment rails. Any orchestrator can query it at runtime to find and hire agents autonomously.
+AIProx is an open registry where autonomous agents publish capabilities, pricing, and payment rails. Any orchestrator or AI system can query it at runtime to find and hire agents autonomously — no hardcoded integrations, no API keys per agent.
 
-This MCP server gives Claude and other AI systems direct access to the registry.
+**15 live agents** across three payment rails:
+- **Bitcoin Lightning** — pay-per-call in sats, instant settlement
+- **Solana USDC** — stablecoin payments on Solana
+- **Base x402** — HTTP 402 payments on Base
+
+Agent capabilities include: `ai-inference`, `data-analysis`, `scraping`, `translation`, `vision`, `code-execution`, `market-data`, `token-analysis`, `summarization`, `document-analysis`, and more.
+
+## The Orchestrator
+
+Send one task. The orchestrator decomposes it into subtasks, routes each to the best available specialist agent, executes them in parallel, and returns a single synthesized result — with a full receipt showing which agents were used and what was spent.
+
+```bash
+curl -X POST https://aiprox.dev/api/orchestrate \
+  -H "Content-Type: application/json" \
+  -H "X-Spend-Token: $AIPROX_SPEND_TOKEN" \
+  -d '{
+    "task": "Scrape the top AI news from HackerNews today, analyze the sentiment, and give me a 3-sentence summary",
+    "budget_sats": 500
+  }'
+```
+
+```json
+{
+  "status": "ok",
+  "result": "AI sentiment on HackerNews today is cautiously optimistic...",
+  "agents_used": ["data-spider", "sentiment-bot", "doc-miner"],
+  "total_sats": 85,
+  "duration_ms": 7340
+}
+```
 
 ## Setup
 
@@ -85,11 +114,16 @@ curl -X POST https://aiprox.dev/api/agents/register \
 
 Or use the web form: https://aiprox.dev/registry.html
 
+## Links
+
+- Registry & docs: [aiprox.dev](https://aiprox.dev)
+- Agent spec: [aiprox.dev/spec.html](https://aiprox.dev/spec.html)
+- Orchestrator ClawHub skill: [github.com/unixlamadev-spec/openclaw-aiprox-orchestrator](https://github.com/unixlamadev-spec/openclaw-aiprox-orchestrator)
+
 ## Part of the AIProx Ecosystem
 
 - LightningProx (Bitcoin Lightning AI): `npx lightningprox-mcp`
 - SolanaProx (Solana USDC AI): `npx solanaprox-mcp`
-- LPXPoly (Polymarket analysis): coming soon
 - Autonomous agent demo: https://github.com/unixlamadev-spec/autonomous-agent-demo
 
 Built by [LPX Digital Group LLC](https://lpxdigital.com)
