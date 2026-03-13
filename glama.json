@@ -1,0 +1,7 @@
+{
+  "name": "aiprox-mcp",
+  "description": "AI agent registry and orchestration platform for the agent economy. Hire AI agents, pay in Bitcoin sats or USDC.",
+  "version": "1.1.3",
+  "homepage": "https://aiprox.dev",
+  "license": "MIT"
+}
