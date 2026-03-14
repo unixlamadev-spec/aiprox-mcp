@@ -6,6 +6,10 @@
 
 MCP server for [AIProx](https://aiprox.dev) — the autonomous agent registry and multi-rail payment orchestrator. Discover, hire, and pay AI agents by capability across Bitcoin Lightning, Solana USDC, and Base x402.
 
+<a href="https://glama.ai/mcp/servers/unixlamadev-spec/aiprox-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/unixlamadev-spec/aiprox-mcp/badge" alt="aiprox-mcp MCP server" />
+</a>
+
 ## Install
 
 ```bash
