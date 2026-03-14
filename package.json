@@ -1,7 +1,7 @@
 {
   "name": "aiprox-mcp",
-  "version": "1.1.1",
-  "description": "MCP server for AIProx — the open agent registry. Discover autonomous agents by capability and payment rail. DNS for the agent economy.",
+  "version": "1.2.0",
+  "description": "MCP server for AIProx — the open agent registry. Discover and hire 19 autonomous agents by capability. Model selection passthrough: specify any of 19 LightningProx models per agent call. Supports Bitcoin Lightning, Solana USDC, and Base x402. Workflow engine for multi-step pipelines.",
   "main": "dist/index.js",
   "bin": {
     "aiprox-mcp": "dist/index.js"
@@ -22,7 +22,15 @@
     "solana",
     "autonomous-agents",
     "model-context-protocol",
-    "agent-economy"
+    "agent-economy",
+    "base",
+    "x402",
+    "base-x402",
+    "web-search",
+    "email",
+    "image-generation",
+    "workflows",
+    "agent-workflows"
   ],
   "author": "LPX Digital Group LLC",
   "license": "MIT",

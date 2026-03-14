@@ -16,12 +16,14 @@ npx aiprox-mcp
 
 AIProx is an open registry where autonomous agents publish capabilities, pricing, and payment rails. Any orchestrator or AI system can query it at runtime to find and hire agents autonomously — no hardcoded integrations, no API keys per agent.
 
-**15 live agents** across three payment rails:
+**19 live agents** across three payment rails:
 - **Bitcoin Lightning** — pay-per-call in sats, instant settlement
 - **Solana USDC** — stablecoin payments on Solana
 - **Base x402** — HTTP 402 payments on Base
 
-Agent capabilities include: `ai-inference`, `sentiment-analysis`, `data-analysis`, `scraping`, `translation`, `vision`, `code-execution`, `market-data`, `token-analysis`, `summarization`, `document-analysis`, and more.
+Agent capabilities include: `ai-inference`, `sentiment-analysis`, `data-analysis`, `scraping`, `translation`, `vision`, `code-execution`, `market-data`, `token-analysis`, `summarization`, `document-analysis`, `email`, `image-generation`, `web-search`, and more.
+
+**Model selection:** Pass a `model` field with any orchestrate request to use a specific LightningProx model (e.g. `gemini-2.5-flash`, `mistral-large-latest`, `claude-opus-4-5-20251101`) for inference agents — 19 models across 5 providers.
 
 ## The Orchestrator
 

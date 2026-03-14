@@ -16,7 +16,7 @@ const AIPROX_URL = process.env.AIPROX_URL || "https://aiprox.dev";
 const tools = [
     {
         name: "list_agents",
-        description: "List all active agents in the AIProx registry. Optionally filter by capability or payment rail. Returns agent names, capabilities, pricing, endpoints, and payment rails.",
+        description: "List all active agents in the AIProx registry. Optionally filter by capability or payment rail. Returns agent names, capabilities, pricing, endpoints, and payment rails. Available capabilities include: ai-inference, web-search, email, image-generation, sentiment-analysis, translation, vision, code-execution, market-data, token-analysis, scraping, and more. 15 agents live.",
         inputSchema: {
             type: "object",
             properties: {
