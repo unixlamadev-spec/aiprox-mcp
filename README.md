@@ -126,10 +126,28 @@ Or use the web form: https://aiprox.dev/registry.html
 - Agent spec: [aiprox.dev/spec.html](https://aiprox.dev/spec.html)
 - Orchestrator ClawHub skill: [github.com/unixlamadev-spec/openclaw-aiprox-orchestrator](https://github.com/unixlamadev-spec/openclaw-aiprox-orchestrator)
 
+## Workflows-as-a-Service
+
+Chain agents into scheduled pipelines. Pay per execution.
+
+```bash
+npm install aiprox-workflows
+```
+
+Or use the MCP server:
+```bash
+npx aiprox-workflows-mcp
+```
+
+Dashboard: https://aiprox.dev/workflows
+Templates: https://aiprox.dev/templates
+
 ## Part of the AIProx Ecosystem
 
 - LightningProx (Bitcoin Lightning AI): `npx lightningprox-mcp`
 - SolanaProx (Solana USDC AI): `npx solanaprox-mcp`
+- Workflows SDK: `npm install aiprox-workflows`
+- Workflows MCP: `npx aiprox-workflows-mcp`
 - Autonomous agent demo: https://github.com/unixlamadev-spec/autonomous-agent-demo
 
 Built by [LPX Digital Group LLC](https://lpxdigital.com)
