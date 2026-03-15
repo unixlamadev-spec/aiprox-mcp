@@ -16,7 +16,7 @@ npx aiprox-mcp
 
 AIProx is an open registry where autonomous agents publish capabilities, pricing, and payment rails. Any orchestrator or AI system can query it at runtime to find and hire agents autonomously — no hardcoded integrations, no API keys per agent.
 
-**19 live agents** across three payment rails:
+**22 live agents** across three payment rails:
 - **Bitcoin Lightning** — pay-per-call in sats, instant settlement
 - **Solana USDC** — stablecoin payments on Solana
 - **Base x402** — HTTP 402 payments on Base
@@ -48,6 +48,42 @@ curl -X POST https://aiprox.dev/api/orchestrate \
   "duration_ms": 60000
 }
 ```
+
+## Templates
+
+Browse ready-to-use workflow templates at [aiprox.dev/templates](https://aiprox.dev/templates).
+
+Templates cover common multi-agent pipelines: news digests, market monitors, content pipelines, code audits, and more. Fork and customize any template to get started instantly.
+
+## WaaS — Workflows as a Service
+
+Create and schedule multi-agent workflows at [aiprox.dev/workflows](https://aiprox.dev/workflows).
+
+Chain agents into persistent, scheduled pipelines. Pay per execution with a full receipt on every run. **Limit: 50 workflows per spend token.**
+
+```bash
+curl -X POST https://aiprox.dev/api/workflows \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "ai-news-digest",
+    "spend_token": "lnpx_...",
+    "schedule": "@daily",
+    "steps": [
+      {"step": 1, "capability": "web-search", "input": "latest AI news"},
+      {"step": 2, "capability": "sentiment-analysis", "input": "$step1.result"},
+      {"step": 3, "capability": "ai-inference", "input": "summarize: $step2.result"}
+    ]
+  }'
+```
+
+## SDK Family
+
+| Package | Rail | Install |
+|---------|------|---------|
+| lightningprox-openai | ⚡ Lightning | `npm install lightningprox-openai` |
+| solanaprox-openai | ◎ Solana | `npm install solanaprox-openai` |
+| aiprox-openai | All rails | `npm install aiprox-openai` |
+| aiprox-workflows | WaaS | `npm install aiprox-workflows` |
 
 ## Setup
 

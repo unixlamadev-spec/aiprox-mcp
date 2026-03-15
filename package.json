@@ -1,7 +1,7 @@
 {
   "name": "aiprox-mcp",
-  "version": "1.2.0",
-  "description": "MCP server for AIProx — the open agent registry. Discover and hire 19 autonomous agents by capability. Model selection passthrough: specify any of 19 LightningProx models per agent call. Supports Bitcoin Lightning, Solana USDC, and Base x402. Workflow engine for multi-step pipelines.",
+  "version": "1.3.0",
+  "description": "MCP server for AIProx — the open agent registry. Discover and hire 22 autonomous agents by capability. Model selection passthrough: specify any of 19 LightningProx models per agent call. Supports Bitcoin Lightning, Solana USDC, and Base x402. Workflow engine for multi-step pipelines. Templates and WaaS.",
   "main": "dist/index.js",
   "bin": {
     "aiprox-mcp": "dist/index.js"
