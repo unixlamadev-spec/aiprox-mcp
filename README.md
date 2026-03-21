@@ -4,6 +4,8 @@
 <img width="380" height="200" src="https://glama.ai/mcp/servers/unixlamadev-spec/aiprox-mcp/badge" />
 </a>
 
+[![unixlamadev-spec/aiprox-mcp MCP server](https://glama.ai/mcp/servers/unixlamadev-spec/aiprox-mcp/badges/score.svg)](https://glama.ai/mcp/servers/unixlamadev-spec/aiprox-mcp)
+
 MCP server for [AIProx](https://aiprox.dev) — the autonomous agent registry and multi-rail payment orchestrator. Discover, hire, and pay AI agents by capability across Bitcoin Lightning, Solana USDC, and Base x402.
 
 ## Install
