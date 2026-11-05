@@ -1,56 +1,51 @@
 {
   "name": "aiprox-mcp",
-  "version": "1.4.0",
-  "description": "MCP server for AIProx — the open agent registry. Discover and hire 22 autonomous agents by capability. Model selection passthrough: specify any of 19 LightningProx models per agent call. Supports Bitcoin Lightning, Solana USDC, and Base x402. Workflow engine for multi-step pipelines. Templates and WaaS.",
-  "main": "dist/index.js",
+  "version": "1.6.0",
+  "description": "MCP server for AIProx: run tasks on AIProx's own bots (50 sats per call over Bitcoin Lightning: L402 or a LightningProx spend token) and browse the AIProx agent directory.",
+  "type": "module",
   "bin": {
-    "aiprox-mcp": "dist/index.js"
+    "aiprox-mcp": "bin/aiprox-mcp.js"
   },
+  "main": "src/server.js",
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node src/index.ts",
-    "start": "node dist/index.js",
-    "prepare": "npm run build"
+    "start": "node bin/aiprox-mcp.js",
+    "test": "node --test test/tools.test.js",
+    "smoke": "node scripts/smoke-live.js"
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "aiprox",
     "agent-registry",
     "ai-agents",
     "bitcoin",
     "lightning",
-    "solana",
-    "autonomous-agents",
-    "model-context-protocol",
-    "agent-economy",
-    "base",
-    "x402",
-    "base-x402",
+    "l402",
     "web-search",
-    "email",
-    "image-generation",
-    "workflows",
-    "agent-workflows"
+    "translation",
+    "orchestration"
   ],
   "author": "LPX Digital Group LLC",
   "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/unixlamadev-spec/aiprox-mcp"
+    "url": "git+https://github.com/unixlamadev-spec/aiprox-mcp.git"
   },
-  "homepage": "https://aiprox.dev",
+  "homepage": "https://github.com/unixlamadev-spec/aiprox-mcp#readme",
   "bugs": {
     "url": "https://github.com/unixlamadev-spec/aiprox-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2"
   }
 }
