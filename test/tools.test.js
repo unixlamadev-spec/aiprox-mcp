@@ -55,7 +55,7 @@ test("list_agents separates AIProx bots from directory listings; no ratings, ver
   assert.equal(f.calls[0].search, "?capability=web-search");
   assert.match(t, /AIProx bots for web-search: run with the orchestrate tool \(50 sats per call\)/);
   assert.match(t, /- search-bot \(web-search\): Search the web\./);
-  assert.match(t, /self-reported and not verified; AIProx never calls or pays them/);
+  assert.match(t, /self-reported and not verified; AIProx never routes tasks to or pays them/);
   assert.match(t, /- pqs \(data-analysis\).*endpoint: https:\/\/pqs\.example\.net\/invoke/);
   assert.doesNotMatch(t, /rating|3\.7|25 sats|x402|✓/);
 });
@@ -69,9 +69,25 @@ test("get_agent: bot vs listing, 404", async () => {
   assert.match(bot, /an AIProx bot.*\n.*\n\nRun it with orchestrate: \{"task": "\.\.\.", "agent": "search-bot"\}.*50 sats/s);
   const ext = out(await callTool(c, "get_agent", { name: "pqs" }));
   assert.match(ext, /third-party directory listing/);
-  assert.match(ext, /not verified\. AIProx never calls or pays it/);
+  assert.match(ext, /not verified\. AIProx never routes tasks to or pays it/);
   const nf = await callTool(c, "get_agent", { name: "nope" });
   assert.equal(nf.isError, true);
+});
+
+test("get_agent: pending and rejected names report their status, not an undefined capability", async () => {
+  const { c } = client({
+    "GET /api/agents/waiting": { body: { name: "waiting", status: "pending", message: "Your listing is being reviewed." } },
+    "GET /api/agents/refused": { body: { name: "refused", status: "rejected", rejection_reason: "endpoint unreachable", rejected_at: "2026-11-01", next: "Fix the endpoint and register again." } },
+  });
+  const p = await callTool(c, "get_agent", { name: "waiting" });
+  assert.ok(!p.isError);
+  assert.match(out(p), /waiting: a directory application, status pending\. It is not listed and cannot be run\./);
+  assert.match(out(p), /being reviewed/);
+  const r = out(await callTool(c, "get_agent", { name: "refused" }));
+  assert.match(r, /status rejected/);
+  assert.match(r, /Reason: endpoint unreachable/);
+  assert.match(r, /Next: Fix the endpoint/);
+  for (const t of [out(p), r]) assert.doesNotMatch(t, /undefined|capability|Endpoint:/);
 });
 
 test("find_agent maps a task to a live capability and the bot, without running anything", async () => {
@@ -86,6 +102,36 @@ test("find_agent maps a task to a live capability and the bot, without running a
   const e = out(await callTool(c, "find_agent", { task: "email the report to my team" }));
   assert.match(e, /capability email/);
   assert.match(e, /explicit yes/);
+});
+
+test("find_agent: reading a PDF goes to data-analysis, making one to document-generation", async () => {
+  const BOTS = { "data-analysis": "doc-miner", "document-generation": "pdf-bot", translation: "polyglot" };
+  const routes = {
+    "GET /api/capabilities": { body: { capabilities: Object.keys(BOTS).map((capability) => ({ capability })) } },
+    "GET /api/agents": (call) => {
+      const cap = new URLSearchParams(call.search).get("capability");
+      return { body: { agents: [{ name: BOTS[cap], capability: cap, endpoint: "[internal]", routable: true, description: "d" }] } };
+    },
+  };
+  const { c } = client(routes);
+  for (const task of ["summarize this PDF", "Summarise this pdf for me", "read this PDF", "generate a summary of this pdf", "what are the key points in report.pdf"]) {
+    assert.match(out(await callTool(c, "find_agent", { task })), /capability data-analysis, run by AIProx's doc-miner/, task);
+  }
+  for (const task of ["generate a PDF report on solar", "create a pdf", "make a sales document", "turn these notes into a PDF", "export this as pdf"]) {
+    assert.match(out(await callTool(c, "find_agent", { task })), /capability document-generation, run by AIProx's pdf-bot/, task);
+  }
+  assert.match(out(await callTool(c, "find_agent", { task: "translate this pdf into Japanese" })), /capability translation/);
+});
+
+test("AIPROX_URL must be https, except for localhost", () => {
+  for (const baseUrl of ["https://aiprox.dev", "https://ax.test/", "http://localhost:8080", "http://127.0.0.1:9", "http://[::1]:9"]) {
+    assert.ok(createClient({ baseUrl, fetchImpl: async () => {} }), baseUrl);
+  }
+  for (const baseUrl of ["http://aiprox.dev", "http://localhost.evil.test", "http://127.0.0.1.evil.test", "ftp://localhost", "aiprox.dev"]) {
+    assert.throws(() => createClient({ baseUrl, token: TOKEN, fetchImpl: async () => {} }), /AIPROX_URL/, baseUrl);
+  }
+  const { server } = createServer({ env: {}, fetchImpl: async () => {} });
+  assert.ok(server);
 });
 
 test("orchestrate with token: header, body, result and receipt; token never echoed", async () => {
@@ -173,7 +219,7 @@ test("orchestrate error mapping", async () => {
     [404, { error: "no_agent_available", hint: "No healthy AIProx agent" }, /No healthy AIProx agent/],
     [502, { error: "orchestration_failed", refund: { status: "credential_restored" } }, /No step produced a usable result\. Payment restored \(credential_restored\)/],
     [429, { error: "rate_limit_exceeded", retry_after_secs: 30 }, /retry in 30 seconds/],
-    [413, { error: "payload_too_large" }, /10 KB/],
+    [413, { error: "payload_too_large" }, /10 KB, or 2 MB for a vision task/],
     [503, "<html>", /AIProx error 503/],
   ];
   for (const [status, body, re] of cases) {
@@ -221,14 +267,14 @@ test("network errors and redaction", async () => {
   assert.equal(redact("a lnpx_abcdef123456 b"), "a lnpx_…(redacted) b");
 });
 
-test("MCP protocol through the SDK: initialize reports 1.6.0, tools/list, tools/call", async () => {
+test("MCP protocol through the SDK: initialize reports 1.6.1, tools/list, tools/call", async () => {
   const f = mockFetch({ "GET /api/agents": { body: AGENTS } });
   const { server } = createServer({ env: { AIPROX_URL: "https://ax.test" }, fetchImpl: f });
   const [a, b] = InMemoryTransport.createLinkedPair();
   await server.connect(a);
   const mcp = new Client({ name: "t", version: "1" });
   await mcp.connect(b);
-  assert.deepEqual(mcp.getServerVersion(), { name: "aiprox", version: "1.6.0" });
+  assert.deepEqual(mcp.getServerVersion(), { name: "aiprox", version: "1.6.1" });
   assert.equal((await mcp.listTools()).tools.length, 7);
   const r = await mcp.callTool({ name: "list_agents", arguments: {} });
   assert.match(r.content[0].text, /search-bot/);

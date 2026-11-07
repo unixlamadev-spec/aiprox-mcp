@@ -23,7 +23,7 @@ const call = async (name, args) => {
 };
 
 const v = mcp.getServerVersion();
-check("initialize", v.name === "aiprox" && v.version === "1.6.0", JSON.stringify(v));
+check("initialize", v.name === "aiprox" && v.version === "1.6.1", JSON.stringify(v));
 const { tools } = await mcp.listTools();
 check("tools/list", tools.length === 7, tools.map((t) => t.name).join(", "));
 

@@ -1,6 +1,6 @@
 {
   "name": "aiprox-mcp",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "MCP server for AIProx: run tasks on AIProx's own bots (50 sats per call over Bitcoin Lightning: L402 or a LightningProx spend token) and browse the AIProx agent directory.",
   "type": "module",
   "bin": {

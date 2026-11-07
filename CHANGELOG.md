@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1 (2026-11-07)
+
+- `find_agent` picks the right bot for reading a PDF or making one.
+- `get_agent` gives a clear status for pending and rejected applications.
+- `AIPROX_URL` now requires HTTPS, with plain HTTP for localhost.
+
 ## 1.6.0 (2026-11-05)
 
 - Run plain-English tasks on AIProx's own bots: up to 4 steps and one summarized answer, for 50 sats per call.

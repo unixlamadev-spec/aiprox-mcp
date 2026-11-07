@@ -12,7 +12,7 @@ export const toolDefinitions = [
   {
     name: "list_agents",
     description:
-      "Free. List the agents in the AIProx directory, optionally for one capability. AIProx's own bots (routable) run tasks through the orchestrate tool. Third-party listings are self-reported, not verified, and never called or paid by AIProx. " + DATA_NOTE,
+      "Free. List the agents in the AIProx directory, optionally for one capability. AIProx's own bots (routable) run tasks through the orchestrate tool. Third-party listings are self-reported, not verified, and AIProx never routes tasks to or pays them. " + DATA_NOTE,
     inputSchema: {
       type: "object",
       properties: {
@@ -79,7 +79,7 @@ export const toolDefinitions = [
   {
     name: "register_agent",
     description:
-      "Free, but public. List your agent in the AIProx directory (POST /api/agents/register). By default this only validates (dry_run). A real listing is public: name, capability, endpoint, description and contact are shown to everyone. Ask the user for explicit confirmation before calling with dry_run: false. AIProx never calls, routes tasks to, or pays directory agents. No credential is sent.",
+      "Free, but public. List your agent in the AIProx directory (POST /api/agents/register). By default this only validates (dry_run). A real listing is public: name, capability, endpoint, description and contact are shown to everyone. Ask the user for explicit confirmation before calling with dry_run: false. AIProx never routes tasks to or pays directory agents. No credential is sent.",
     inputSchema: {
       type: "object",
       properties: {
@@ -117,7 +117,7 @@ async function listAgents(client, args) {
   const lines = [];
   lines.push(`AIProx bots${cap ? ` for ${cap}` : ""}: run with the orchestrate tool (${ORCHESTRATE_PRICE_SATS} sats per call):`);
   lines.push(...(bots.length ? bots.map((a) => `- ${a.name} (${a.capability}): ${short(a.description)}`) : ["- none"]));
-  lines.push("", "Third-party directory listings (self-reported and not verified; AIProx never calls or pays them):");
+  lines.push("", "Third-party directory listings (self-reported and not verified; AIProx never routes tasks to or pays them):");
   lines.push(...(listed.length ? listed.map((a) => `- ${a.name} (${a.capability}): ${short(a.description)} | endpoint: ${a.endpoint}`) : ["- none"]));
   return text(lines.join("\n"));
 }
@@ -129,6 +129,16 @@ async function getAgent(client, args) {
   if (res.status === 404) return fail(`No directory entry named "${name}". Use list_agents to see the names.`);
   if (!res.ok) throw describeError(res);
   const a = res.json || {};
+  if (a.status === "pending" || a.status === "rejected") {
+    return text(
+      [
+        `${a.name || name}: a directory application, status ${a.status}. It is not listed and cannot be run.`,
+        a.rejection_reason ? `Reason: ${short(a.rejection_reason, 400)}` : "",
+        a.message ? short(a.message, 400) : "",
+        a.next ? `Next: ${short(a.next, 400)}` : "",
+      ].filter(Boolean).join("\n"),
+    );
+  }
   if (isAIProxBot(a)) {
     return text(
       [
@@ -145,7 +155,7 @@ async function getAgent(client, args) {
       short(a.description, 400),
       `Endpoint: ${a.endpoint}`,
       "",
-      "Self-reported and not verified. AIProx never calls or pays it. Any use is between you and its operator.",
+      "Self-reported and not verified. AIProx never routes tasks to or pays it. Any use is between you and its operator.",
     ].join("\n"),
   );
 }
@@ -159,9 +169,10 @@ const KEYWORDS = [
   [/\b(scrape|scraping|crawl|extract (text|data) from)\b/, "scraping"],
   [/\b(audit|code review|vulnerabilit\w*|security review|repo|repository)\b/, "code-execution"],
   [/\b(polymarket|prediction market|market signal|odds)\b/, "market-data"],
-  [/\b(pdf|report document|generate a document)\b/, "document-generation"],
+  // Making a PDF. Reading or summarizing one falls through to data-analysis.
+  [/\b(generate|create|make|render|build|export|produce|write)(\s+\w+){0,2}\s+(pdf|document)\b|\b(to|into|as)\s+(a\s+)?pdf\b|\breport document\b/, "document-generation"],
   [/\b(rug|token risk|solana token|contract risk)\b/, "token-analysis"],
-  [/\b(summari[sz]e|analy[sz]e|analysis|key points)\b/, "data-analysis"],
+  [/\b(summari[sz]e|analy[sz]e|analysis|key points|pdf)\b/, "data-analysis"],
   [/\b(email|e-mail)\b/, "email"],
 ];
 
@@ -307,7 +318,7 @@ async function registerAgent(client, args) {
       j.reason ? `Reason: ${j.reason}` : "",
       j.next ? `Next: ${j.next}` : "",
       j.agent ? `Listing: ${j.agent}` : "",
-      "AIProx never calls or pays directory agents.",
+      "AIProx never routes tasks to or pays directory agents.",
     ].filter(Boolean).join("\n"),
   );
 }

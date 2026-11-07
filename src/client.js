@@ -3,7 +3,7 @@
 // from every string this module returns.
 
 export const DEFAULT_URL = "https://aiprox.dev";
-export const VERSION = "1.6.0";
+export const VERSION = "1.6.1";
 const USER_AGENT = `aiprox-mcp/${VERSION}`;
 const TIMEOUT_MS = 120_000; // orchestrate answers within 85 s
 
@@ -24,8 +24,23 @@ export function redact(s, token) {
   return out.replace(/lnpx_[A-Za-z0-9]{8,}/g, "lnpx_…(redacted)");
 }
 
+/** Why a base URL can't be used, or "" if it can. Plain http is for localhost only. */
+function baseUrlProblem(raw) {
+  let u;
+  try {
+    u = new URL(raw);
+  } catch {
+    return "AIPROX_URL is not a valid URL";
+  }
+  if (u.protocol === "https:") return "";
+  if (u.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(u.hostname)) return "";
+  return "AIPROX_URL must use https (plain http is allowed only for localhost)";
+}
+
 export function createClient({ baseUrl, token, fetchImpl } = {}) {
   const base = (baseUrl || DEFAULT_URL).replace(/\/+$/, "");
+  const problem = baseUrlProblem(base);
+  if (problem) throw new Error(problem);
   const doFetch = fetchImpl || globalThis.fetch;
   if (typeof doFetch !== "function") {
     throw new Error("global fetch is not available: Node.js 18 or newer is required");
@@ -101,7 +116,7 @@ export function describeError(res, { token } = {}) {
       msg = `Rate limited by AIProx${b.retry_after_secs ? `; retry in ${b.retry_after_secs} seconds` : ""}. ${serverMsg}`;
       break;
     case res.status === 413:
-      msg = `Request too large (orchestrate bodies are limited to 10 KB). Nothing was charged.`;
+      msg = `Request too large (orchestrate bodies are limited to 10 KB, or 2 MB for a vision task). Nothing was charged.`;
       break;
     case res.status === 400:
       msg = `AIProx rejected the request (${code || "400"}): ${serverMsg} Nothing was charged.`;

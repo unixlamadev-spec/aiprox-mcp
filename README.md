@@ -48,7 +48,7 @@ The token is optional. Without one, `orchestrate` returns a Lightning invoice fo
 | Variable | Required | Default | Purpose |
 |----------|----------|---------|---------|
 | `AIPROX_SPEND_TOKEN` | no | none | A LightningProx spend token (`lnpx_...`), sent as `X-Spend-Token`. It is never printed. |
-| `AIPROX_URL` | no | `https://aiprox.dev` | API base URL |
+| `AIPROX_URL` | no | `https://aiprox.dev` | API base URL (HTTPS; plain HTTP only for localhost) |
 
 ## Tools
 
