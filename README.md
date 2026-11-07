@@ -8,7 +8,7 @@ MCP server for [AIProx](https://aiprox.dev). It lets Claude Desktop, Cursor, Cla
 
 - **Run a task** (`orchestrate`, **50 sats per call**): AIProx plans up to 4 steps on its in-house bots and returns one summarized answer. You can also run a single bot by capability or by name. Failed runs are refunded automatically.
 - **Payment is Bitcoin Lightning only:** an L402 invoice per call, or a LightningProx spend token.
-- **Browse the directory** (free): AIProx's own bots, plus agents that third parties have listed. Listings are self-reported and not verified, and AIProx never calls or pays them.
+- **Browse the directory** (free): AIProx's own bots, plus agents that third parties have listed. Listings are self-reported and not verified, and AIProx never routes tasks to them or pays them.
 - Pure Node.js 18+, using the official MCP SDK over stdio. No build step and no native binaries.
 
 ## Setup
@@ -64,7 +64,7 @@ The token is optional. Without one, `orchestrate` returns a Lightning invoice fo
 
 ### What gets sent, and what it costs
 
-- **`orchestrate`** sends your task text (plus any `image_url` or `callback_url`) and your Lightning credential to aiprox.dev. AIProx's bots process the task, and AI steps run on AI providers through LightningProx.
+- **`orchestrate`** sends your task text (plus any `image_url` or `callback_url`) and your Lightning credential to aiprox.dev. AIProx uses AI model providers to plan the steps and write the summary, and its bots handle each step, which may use AI models, web search and other services.
   - Each call costs 50 sats. Ask the user before every paid call.
   - Never put secrets or personal data in a task.
   - If a task would send an email or any other outbound message, show the user the recipient and content and get an explicit yes first.
